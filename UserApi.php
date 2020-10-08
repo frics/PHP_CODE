@@ -48,12 +48,12 @@ if(isset($_GET['apicall'])){
                         $stmt->close();
 
                         $sql = "CREATE TABLE REF_DB.$mem_idx$nickname (
-                                    ref_idx INT(12), 
-                                    category VARCHAR(20) NOT NULL, 
-                                    tag VARCHAR(20) NOT NULL, 
+                                    ref_idx INT(12),
+                                    category VARCHAR(20) NOT NULL,
+                                    tag VARCHAR(20) NOT NULL,
                                     name VARCHAR(30) NOT NULL,
                                     tagNumber INT(5) NOT NULL,
-                                    PRIMARY KEY(ref_idx), 
+                                    PRIMARY KEY(ref_idx),
                                     UNIQUE(name)
                                 );";
                         if(mysqli_query($conn, $sql)){
@@ -65,7 +65,7 @@ if(isset($_GET['apicall'])){
                         }
                         $response['error'] = false;
                         $response['message'] = '회원가입 완료';
-                    
+
                     }
                 }
 
@@ -77,14 +77,14 @@ if(isset($_GET['apicall'])){
 
         case 'signin':
 
-            //for login we need the username and password 
+            //for login we need the username and password
 
             if(isTheseParametersAvailable(array('id', 'password'))){
-                //getting values 
+                //getting values
                 $id = $_POST['id'];
                 $password = md5($_POST['password']);
 
-                //creating the query 
+                //creating the query
                 $stmt = $conn->prepare("SELECT mem_idx, id, nickname FROM MEMBER_DB.members WHERE id = ? AND password = ?");
                 $stmt->bind_param("ss",$id, $password);
 
@@ -93,7 +93,7 @@ if(isset($_GET['apicall'])){
                 $stmt->store_result();
 
 
-                //if the user exist with given credentials 
+                //if the user exist with given credentials
                 if($stmt->num_rows > 0){
 
                     $stmt->bind_result($mem_idx, $id, $nickname);
@@ -139,7 +139,7 @@ if(isset($_GET['apicall'])){
                     if($result = mysqli_query($conn, $sql)){
                         $scrapResponse['error'] = false;
                         $scrapResponse['message'] = "스크랩 리스트 복원 성공";
-                            
+
                         $scrap_data = array();
                         while($row = mysqli_fetch_array($result)) {
                             array_push($scrap_data,
@@ -152,7 +152,7 @@ if(isset($_GET['apicall'])){
                     }
 
                 }else{
-                    //if the user not found 
+                    //if the user not found
                     $response['error'] = false;
                     $response['message'] = '아이디 혹은 비밀번호가 맞지 않습니다.';
                 }

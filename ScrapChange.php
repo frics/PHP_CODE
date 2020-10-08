@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set("display_error", 1);
 
-$conn = new mysqli("recipe-db.cshisawjylld.ap-northeast-2.rds.amazonaws.com","root","recipe123", "RECIPE_DB");
+$conn = new mysqli("recipe-db.cshisawjylld.ap-northeast-2.rds.amazonaws.com","root","recipe123");
 
 
 // 연결 확인
@@ -30,28 +30,28 @@ if(isset($_GET['apicall'])) {
                 //$isScraped == true면 이제 좋아요 누른거임
 
                 if ($isScraped == true) {
-                    $stmt = $conn->prepare("INSERT INTO scrap (serial_num, user_id) VALUES(?, ?)");
+                    $stmt = $conn->prepare("INSERT INTO RECIPE_DB.scrap (serial_num, user_id) VALUES(?, ?)");
                 } else {//좋아요 취소했을때 테이블에서 제거
-                    $stmt = $conn->prepare("DELETE FROM scrap WHERE serial_num = ? AND user_id = ?");
+                    $stmt = $conn->prepare("DELETE FROM RECIPE_DB.scrap WHERE serial_num = ? AND user_id = ?");
                 }
 
                 $stmt->bind_param("ss", $serial_num, $id);
 
                 if ($stmt->execute()) {
-                    
+
                     //isScraped에 따라서 UPDATE 쿼리문 증감 설정
                     //true면 +1 false면 -1
                     if ($isScraped == true) {
-                        $sql = "UPDATE scrapCount SET scrap_cnt = (scrap_cnt+1) WHERE serial_num = $serial_num";
+                        $sql = "UPDATE= RECIPE_DB.scrapCount SET scrap_cnt = (scrap_cnt+1) WHERE serial_num = $serial_num";
                         $response['error'] = false;
                         $response['message'] = "$serial_num : 좋아요 갱신 성공!";
                     } else {
-                        $sql = "UPDATE scrapCount SET scrap_cnt = (scrap_cnt-1) WHERE serial_num = $serial_num";
+                        $sql = "UPDATE RECIPE_DB.scrapCount SET scrap_cnt = (scrap_cnt-1) WHERE serial_num = $serial_num";
                         $response['error'] = false;
                         $response['message'] = "$serial_num : 좋아요 취소 성공!";
                     }
                     //앞서 설정한 UPDATE 쿼리 실행
-                    
+
                     if($result = mysqli_query($conn, $sql)) {
                         $response['cntChangeError'] = false;
                         $response['cntChangeMessage'] = "$serial_num : 좋아요 카운트 갱신 성공";
@@ -65,11 +65,11 @@ if(isset($_GET['apicall'])) {
                 }
             }
             break;
-            
+
         case 'getScrapCount':
-            
+
             //좋아요 갯수 상위 30개 가져옴
-            $sql = "SELECT * FROM scrapCount ORDER BY scrap_cnt DESC, serial_num LIMIT 30";
+            $sql = "SELECT * FROM RECIPE_DB.scrapCount ORDER BY scrap_cnt DESC, serial_num LIMIT 30";
 
             if($result = mysqli_query($conn, $sql)){
                 $data = array();

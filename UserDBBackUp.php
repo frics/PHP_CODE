@@ -1,7 +1,7 @@
 <?php
 
 
-$conn = new mysqli("recipe-db.cshisawjylld.ap-northeast-2.rds.amazonaws.com","root","recipe123", "REF_DB");
+$conn = new mysqli("recipe-db.cshisawjylld.ap-northeast-2.rds.amazonaws.com","root","recipe123");
 
 
 // 연결 확인
@@ -15,7 +15,7 @@ if($_POST['dbname']){
 
     $dbname = $_POST['dbname'];
 
-    $sql = "TRUNCATE TABLE $dbname";
+    $sql = "TRUNCATE TABLE REF_DB.$dbname";
 
     if(mysqli_query($conn, $sql)){
         if($_POST['refJson']){
@@ -23,17 +23,17 @@ if($_POST['dbname']){
             $response['truncate'] = "초기화 성공";
             $json = $_POST['refJson'];
             $arr = json_decode($json);
-            
-            $stmt = $conn -> prepare("INSERT INTO $dbname VALUES(?, ?, ?, ?, ?)");
+
+            $stmt = $conn -> prepare("INSERT INTO REF_DB.$dbname VALUES(?, ?, ?, ?, ?)");
             foreach($arr as $row){
                 $stmt->bind_param("sssss", $row -> ref_idx, $row -> category, $row -> tag, $row -> name, $row ->tagNumber);
                 $stmt->execute();
             }
             $stmt->close();
-            
+
             $response['error'] = false;
             $response['message'] = "DB 백업 성공";
-            
+
         }
         else{
             $response['error'] = false;
